@@ -51,7 +51,17 @@ export default {
           if (doc.exists){
             this.feedback = 'This alias already exists'
           } else {
-            firebase.auth().createUserWithEmailAndPassword(this.email, this.password).catch(err => {
+            firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+            .then(cred => {
+              ref.set({
+                alias: this.alias,
+                geolocation: null,
+                user_id: cred.user.uid
+              })
+            }).then(() => {
+              this.$router.push({name: 'GMap' })
+            })
+            .catch(err => {
               console.log(err)
               this.feedback = err.message
             })
