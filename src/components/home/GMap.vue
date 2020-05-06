@@ -11,8 +11,8 @@ export default {
   name:  'GMap',
   data() {
     return {
-      lat: 17,
-      lng: 78,
+      lat: 1,
+      lng: -16,
     }
   },
   methods: {
@@ -27,8 +27,20 @@ export default {
     }
   },
   mounted(){
-    this.renderMap()
-    console.log(firebase.auth().currentUser)
+    // get user geo location
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(pos => {
+        this.lat = pos.coords.latitude
+        this.lng = pos.coords.longitude
+        this.renderMap()
+      }, (err) => {
+        console.log(err)
+        this.renderMap()
+      }, { maximumAge: 60000, timeout: 3000 })
+    } else {
+      // position center by default values
+      this.renderMap()
+    }
   }
 }
 </script>
