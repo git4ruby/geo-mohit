@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import GMap from '@/components/home/GMap'
 import Signup from '@/components/auth/Signup'
 import Login from '@/components/auth/Login'
+import firebase from 'firebase'
 
 Vue.use(VueRouter)
 
@@ -10,15 +11,10 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'GMap',
-    component: GMap
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: GMap,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path:  "/signup",
@@ -34,6 +30,23 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next)  => {
+  // check to see if routes requires auth
+  if(to.matched.some(rec => rec.meta.requiresAuth)){
+    // check auth state of user
+    let user = firebase.auth().currentUser
+    if(user){
+      // user signed in, proceed to route
+      next()
+    } else {
+      // user not signed in redirect to login
+      next({ name: 'Login' })
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
