@@ -30,8 +30,10 @@ Vue.use(VueRouter)
   {
     path: '/profile/:id',
     name: 'ViewProfile',
-    components: ViewProfile
-    
+    components: ViewProfile,
+    meta: {
+      requiresAuth: true
+    }    
   }
 ]
 
