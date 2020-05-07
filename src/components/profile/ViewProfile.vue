@@ -18,8 +18,6 @@ export default {
   },
   created(){
     let ref = db.collection('users')
-    console.log(this.$route);
-    console.log(ref.doc('the-mohit-ninja').id)
     ref.doc(this.$route.params.id).get()
     .then(user => {
       this.profile = user.data()
